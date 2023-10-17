@@ -11,9 +11,7 @@
 </template>
 
 <script>
-import { axiosPrivate } from '../../../../axios/axios'
 import axios from '../api/axios'
-
 const LOGIN_URL = '/auth/login'
 
 export default {
@@ -22,6 +20,7 @@ export default {
     userName: '',
     password: '',
   }),
+  computed: {},
   methods: {
     async connectUser() {
       try {
@@ -30,7 +29,8 @@ export default {
           withCredentials: true,
         })
         const accessToken = res?.data?.accessToken
-        console.log(accessToken + '  ->connexion')
+
+        this.$store.dispatch('setUser', { accessToken, ...res.data.user })
         this.$router.push('/')
       } catch (error) {
         if (!error?.response) {

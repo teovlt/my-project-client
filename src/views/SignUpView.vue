@@ -12,7 +12,7 @@
 </template>
 
 <script>
-import axios from '../../../../axios/axios'
+import axios from '../api/axios'
 const REGISTER_URL = '/auth/register'
 export default {
   name: 'SignUpView',
