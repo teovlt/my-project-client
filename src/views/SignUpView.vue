@@ -1,7 +1,7 @@
 <template>
   <div>
     <h1>Connexion</h1>
-    <form @submit.prevent="connectUser()">
+    <form @submit.prevent="createUser()">
       <input type="text" placeholder="Nom d'utilisateur" v-model="userName" />
       <input type="password" placeholder="Mot de passe" v-model="password" />
       <input type="password" placeholder="Confirmez votre mot de passe" v-model="checkPassword" />
@@ -12,6 +12,8 @@
 </template>
 
 <script>
+import axios from '../../../../axios/axios'
+const REGISTER_URL = '/auth/register'
 export default {
   name: 'SignUpView',
   data: () => ({
@@ -20,11 +22,23 @@ export default {
     checkPassword: '',
   }),
   methods: {
-    connectUser() {
-      console.log('Username : ' + this.userName)
-      console.log('Password : ' + this.password)
-      console.log('Password verif : ' + this.checkPassword)
-      this.$router.push('/')
+    async createUser() {
+      try {
+        const res = await axios.post(REGISTER_URL, JSON.stringify({ name: this.userName, password: this.password }), {
+          headers: { 'Content-Type': 'application/json' },
+          withCredentials: true,
+        })
+        const accessToken = res?.data?.accessToken
+        console.log(accessToken)
+
+        this.$router.push('/')
+      } catch (err) {
+        if (err.code === 404) {
+          console.log("Nom d'utilisateur déja pris")
+        } else {
+          console.log('Une erreur est survenue')
+        }
+      }
     },
   },
 }
