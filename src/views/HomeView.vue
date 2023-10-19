@@ -3,15 +3,15 @@
     <Navbar />
     Hello from {{ msg }}
     <br />
-    Utilisateur : {{ user }}
+    Connected as {{ user }}
     <br />
     <RouterLink to="/about">ABOUT PAGE</RouterLink>
   </div>
 </template>
 
 <script>
-import axios from '../api/axios'
 import Navbar from '../components/Navbar.vue'
+import { axiosPrivate } from '../api/axios'
 
 const REFRESH_URL = '/auth/refresh-token'
 
@@ -20,28 +20,28 @@ export default {
   components: {
     Navbar: Navbar,
   },
-  data: () => ({
-    msg: 'home',
-  }),
+  data() {
+    return {
+      msg: 'home',
+      userLoaded: false, // Ajoutez une variable pour suivre si l'utilisateur a été chargé
+    }
+  },
   computed: {
     user() {
-      this.checkUser()
+      if (!this.userLoaded) {
+        this.getUser() // Chargez l'utilisateur si ce n'est pas encore fait
+        this.userLoaded = true
+      }
       return this.$store.getters.getUser
     },
   },
   methods: {
-    async checkUser() {
-      const res = await axios.get(
-        REFRESH_URL,
-        { ...user._id },
-        {
-          headers: { 'Content-Type': 'application/json' },
-          withCredentials: true,
-        }
-      )
-      console.log(res)
+    async getUser() {
+      if (!this.userLoaded) {
+        const res = await axiosPrivate.get(REFRESH_URL)
+        this.$store.dispatch('setUser', res.data.user)
+      }
     },
   },
-  mounted: () => {},
 }
 </script>

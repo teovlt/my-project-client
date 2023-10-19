@@ -2,21 +2,16 @@
   <header>
     <button>LOGO</button>
     <h2>Titre du site</h2>
-    <button @click="disconnect()">Se deconnecter</button>
+    <button @click="logout">Se déconnecter</button>
   </header>
 </template>
 
 <script>
 export default {
   name: 'Navbar',
-  data: () => ({
-    msg: 'cc',
-  }),
   methods: {
-    async disconnect() {
-      await this.$store.dispatch('logout').then(() => {
-        this.$router.push('/')
-      })
+    async logout() {
+      console.log('logout')
     },
   },
 }
