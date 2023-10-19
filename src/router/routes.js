@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import store from '../store'
+import { axiosPrivate } from '../api/axios'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -41,15 +42,20 @@ const router = createRouter({
 })
 
 router.beforeEach(async (to, from, next) => {
-  // Vérifiez si la route actuelle a la métadonnée requireAuth à true
   const requiresAuth = to.matched.some((record) => record.meta.requireAuth)
-
-  // Vérifiez si l'utilisateur n'est pas authentifié et que la route nécessite une authentification
-  if (requiresAuth && store.state.user === null) {
-    // Redirigez l'utilisateur vers la page de connexion
-    next({ name: 'login' })
+  // Vérifiez si l'utilisateur est authentifié
+  if (!store.state.user && requiresAuth) {
+    try {
+      const res = await axiosPrivate.get('/auth/refresh-token')
+      store.dispatch('setUser', { token: res.data.accessToken, ...res.data.user })
+      next()
+    } catch (err) {
+      console.log(err.message)
+    }
+    // Si l'utilisateur n'est pas authentifié, redirigez-le vers la page de connexion
+    next('/login')
   } else {
-    // L'utilisateur est authentifié ou la route ne nécessite pas d'authentification, continuez normalement
+    // L'utilisateur est authentifié, continuez normalement
     next()
   }
 })

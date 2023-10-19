@@ -1,6 +1,7 @@
 <template>
   <div>
-    <Navbar />
+    <button @click="logout">Se déconnecter</button>
+
     Hello from {{ msg }}
     <br />
     Connected as {{ user }}
@@ -10,16 +11,11 @@
 </template>
 
 <script>
-import Navbar from '../components/Navbar.vue'
 import { axiosPrivate } from '../api/axios'
-
-const REFRESH_URL = '/auth/refresh-token'
 
 export default {
   name: 'HomeView',
-  components: {
-    Navbar: Navbar,
-  },
+
   data() {
     return {
       msg: 'home',
@@ -28,18 +24,17 @@ export default {
   },
   computed: {
     user() {
-      if (!this.userLoaded) {
-        this.getUser() // Chargez l'utilisateur si ce n'est pas encore fait
-        this.userLoaded = true
-      }
       return this.$store.getters.getUser
     },
   },
   methods: {
-    async getUser() {
-      if (!this.userLoaded) {
-        const res = await axiosPrivate.get(REFRESH_URL)
-        this.$store.dispatch('setUser', res.data.user)
+    async logout() {
+      try {
+        const res = await axiosPrivate.get('/auth/logout')
+        console.log(res.data)
+        this.$router.push('/login')
+      } catch (err) {
+        console.log(res.data)
       }
     },
   },

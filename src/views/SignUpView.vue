@@ -12,7 +12,7 @@
 </template>
 
 <script>
-import axios from '../api/axios'
+import { axiosPrivate } from '../api/axios'
 const REGISTER_URL = '/auth/register'
 export default {
   name: 'SignUpView',
@@ -24,19 +24,15 @@ export default {
   methods: {
     async createUser() {
       try {
-        const res = await axios.post(REGISTER_URL, JSON.stringify({ name: this.userName, password: this.password }), {
-          headers: { 'Content-Type': 'application/json' },
-          withCredentials: true,
-        })
+        const res = await axiosPrivate.post(REGISTER_URL, JSON.stringify({ name: this.userName, password: this.password }))
         const accessToken = res?.data?.accessToken
-        console.log(accessToken)
-
+        this.$store.dispatch('setUser', { token: accessToken, ...res.data.user })
         this.$router.push('/')
       } catch (err) {
         if (err.code === 404) {
           console.log("Nom d'utilisateur déja pris")
         } else {
-          console.log('Une erreur est survenue')
+          console.log(err.message)
         }
       }
     },

@@ -7,11 +7,17 @@
 </template>
 
 <script>
+import axios from '../api/axios'
 export default {
-  name: 'Navbar',
   methods: {
     async logout() {
-      console.log('logout')
+      try {
+        const res = await axios('/auth/logout')
+        console.log(res.data)
+        this.$router.push('/login')
+      } catch (err) {
+        console.log(res.data)
+      }
     },
   },
 }
