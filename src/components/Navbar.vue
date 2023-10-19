@@ -2,6 +2,17 @@
   <header>
     <button>LOGO</button>
     <h2>Titre du site</h2>
-    <router-link to="/login">Se connecter</router-link>
+    <button @click="logout">Se déconnecter</button>
   </header>
 </template>
+
+<script>
+export default {
+  name: 'Navbar',
+  methods: {
+    async logout() {
+      console.log('logout')
+    },
+  },
+}
+</script>
