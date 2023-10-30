@@ -1,27 +1,11 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import store from '../store'
-import { axiosPrivate } from '../api/axios'
+import PersistLogin from '../components/PersistLogin.vue'
+import AuthGuard from '../components/AuthGuard.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
 
   routes: [
-    {
-      path: '/',
-      name: 'home',
-      meta: {
-        requireAuth: true,
-      },
-      component: () => import('../views/HomeView.vue'),
-    },
-    {
-      path: '/about',
-      name: 'about',
-      meta: {
-        requireAuth: true,
-      },
-      component: () => import('../views/AboutView.vue'),
-    },
     {
       path: '/register',
       name: 'register',
@@ -38,26 +22,29 @@ const router = createRouter({
       },
       component: () => import('../views/SignInView.vue'),
     },
+    {
+      path: '/',
+      component: PersistLogin,
+      children: [
+        {
+          path: '/',
+          component: AuthGuard, // Utilisez AuthGuard comme garde de navigation
+          children: [
+            {
+              path: '/',
+              name: 'home',
+              component: () => import('../views/HomeView.vue'),
+            },
+            {
+              path: '/about',
+              name: 'about',
+              component: () => import('../views/AboutView.vue'),
+            },
+          ],
+        },
+      ],
+    },
   ],
-})
-
-router.beforeEach(async (to, from, next) => {
-  const requiresAuth = to.matched.some((record) => record.meta.requireAuth)
-  // Vérifiez si l'utilisateur est authentifié
-  if (!store.state.user && requiresAuth) {
-    try {
-      const res = await axiosPrivate.get('/auth/refresh-token')
-      store.dispatch('setUser', { token: res.data.accessToken, ...res.data.user })
-      next()
-    } catch (err) {
-      console.log(err.message)
-    }
-    // Si l'utilisateur n'est pas authentifié, redirigez-le vers la page de connexion
-    next('/login')
-  } else {
-    // L'utilisateur est authentifié, continuez normalement
-    next()
-  }
 })
 
 export default router

@@ -19,7 +19,6 @@ export default {
   data() {
     return {
       msg: 'home',
-      userLoaded: false, // Ajoutez une variable pour suivre si l'utilisateur a été chargé
     }
   },
   computed: {
@@ -32,6 +31,7 @@ export default {
       try {
         const res = await axiosPrivate.get('/auth/logout')
         console.log(res.data)
+        this.$store.commit('setLoggedIn', false)
         this.$router.push('/login')
       } catch (err) {
         console.log(res.data)
