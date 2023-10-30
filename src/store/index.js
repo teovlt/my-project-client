@@ -1,10 +1,8 @@
 import { createStore } from 'vuex'
-import Cookies from 'js-cookie'
 
 export default new createStore({
   state: {
     user: null,
-    token: Cookies.get('__refresh__token') || '',
     isLoggedIn: false,
   },
   getters: {
