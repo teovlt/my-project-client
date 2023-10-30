@@ -1,23 +1,42 @@
 <template>
   <div>
-    <Navbar />
+    <button @click="logout">Se déconnecter</button>
+
     Hello from {{ msg }}
+    <br />
+    Connected as {{ user }}
     <br />
     <RouterLink to="/about">ABOUT PAGE</RouterLink>
   </div>
 </template>
 
 <script>
-import Navbar from '../components/Navbar.vue'
+import { axiosPrivate } from '../api/axios'
 
 export default {
   name: 'HomeView',
-  components: {
-    Navbar: Navbar,
+
+  data() {
+    return {
+      msg: 'home',
+    }
   },
-  data: () => ({
-    msg: 'home',
-  }),
-  computed: () => ({}),
+  computed: {
+    user() {
+      return this.$store.getters.getUser
+    },
+  },
+  methods: {
+    async logout() {
+      try {
+        const res = await axiosPrivate.get('/auth/logout')
+        console.log(res.data)
+        this.$store.commit('setLoggedIn', false)
+        this.$router.push('/login')
+      } catch (err) {
+        console.log(res.data)
+      }
+    },
+  },
 }
 </script>

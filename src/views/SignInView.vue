@@ -11,8 +11,8 @@
 </template>
 
 <script>
-import { axiosPrivate } from '../../../../axios/axios'
-import axios from '../api/axios'
+import { axiosPrivate } from '../api/axios'
+import store from '../store'
 
 const LOGIN_URL = '/auth/login'
 
@@ -22,15 +22,15 @@ export default {
     userName: '',
     password: '',
   }),
+  computed: {},
   methods: {
     async connectUser() {
       try {
-        const res = await axios.post(LOGIN_URL, JSON.stringify({ name: this.userName, password: this.password }), {
-          headers: { 'Content-Type': 'application/json' },
-          withCredentials: true,
-        })
+        const res = await axiosPrivate.post(LOGIN_URL, JSON.stringify({ name: this.userName, password: this.password }))
         const accessToken = res?.data?.accessToken
-        console.log(accessToken + '  ->connexion')
+        console.log(res.data)
+        this.$store.dispatch('setUser', { token: accessToken, ...res.data.user })
+        this.$store.commit('setLoggedIn', true)
         this.$router.push('/')
       } catch (error) {
         if (!error?.response) {
