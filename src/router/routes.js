@@ -28,7 +28,7 @@ const router = createRouter({
       children: [
         {
           path: '/',
-          component: AuthGuard, // Utilisez AuthGuard comme garde de navigation
+          component: AuthGuard,
           children: [
             {
               path: '/',

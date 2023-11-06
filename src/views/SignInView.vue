@@ -13,7 +13,6 @@
 <script>
 import { axiosPrivate } from '../api/axios'
 import store from '../store'
-
 const LOGIN_URL = '/auth/login'
 
 export default {
@@ -28,8 +27,7 @@ export default {
       try {
         const res = await axiosPrivate.post(LOGIN_URL, JSON.stringify({ name: this.userName, password: this.password }))
         const accessToken = res?.data?.accessToken
-        console.log(res.data)
-        this.$store.dispatch('setUser', { token: accessToken, ...res.data.user })
+        this.$store.dispatch('setUser', { ...res.data.user, accessToken: accessToken })
         this.$store.commit('setLoggedIn', true)
         this.$router.push('/')
       } catch (error) {

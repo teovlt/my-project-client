@@ -1,10 +1,10 @@
 <template>
-  <div>
+  <div class="main">
     <button @click="logout">Se déconnecter</button>
 
     Hello from {{ msg }}
     <br />
-    Connected as {{ user }}
+    Connected as : {{ user.name }}
     <br />
     <RouterLink to="/about">ABOUT PAGE</RouterLink>
   </div>
@@ -17,6 +17,7 @@ export default {
   name: 'HomeView',
 
   data() {
+    console.log('JE SUIS DANS HOME')
     return {
       msg: 'home',
     }
@@ -40,3 +41,11 @@ export default {
   },
 }
 </script>
+
+<style scoped>
+.main {
+  display: flex;
+  flex-direction: column;
+  row-gap: 10px;
+}
+</style>

@@ -18,6 +18,7 @@ export default {
     if (!isAuthenticated.value) {
       router.replace({ name: 'login' })
     }
+    console.log('JE AUTHGARD')
     return {
       isAuthenticated,
     }

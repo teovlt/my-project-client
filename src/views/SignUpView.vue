@@ -26,7 +26,8 @@ export default {
       try {
         const res = await axiosPrivate.post(REGISTER_URL, JSON.stringify({ name: this.userName, password: this.password }))
         const accessToken = res?.data?.accessToken
-        this.$store.dispatch('setUser', { token: accessToken, ...res.data.user })
+        this.$store.dispatch('setUser', { ...res.data.user, accessToken: accessToken })
+        this.$store.commit('setLoggedIn', true)
         this.$router.push('/')
       } catch (err) {
         if (err.code === 404) {
